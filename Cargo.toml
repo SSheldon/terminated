@@ -1,0 +1,6 @@
+[package]
+name = "nul"
+version = "0.0.0"
+authors = ["Steven Sheldon"]
+
+[dependencies]
