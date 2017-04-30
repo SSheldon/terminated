@@ -3,4 +3,14 @@ name = "nul"
 version = "0.0.0"
 authors = ["Steven Sheldon"]
 
-[dependencies]
+description = "Types for representing NUL-terminated UTF8 strings."
+keywords = ["cstring", "null-terminated", "ffi"]
+categories = ["memory-management", "no-std"]
+readme = "README.md"
+repository = "https://github.com/SSheldon/nul"
+documentation = "https://docs.rs/nul/"
+license = "MIT"
+
+exclude = [
+  ".gitignore",
+ ]
