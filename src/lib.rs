@@ -1,6 +1,8 @@
-use std::fmt;
-use std::mem;
-use std::ops::Deref;
+#![no_std]
+
+use core::fmt;
+use core::mem;
+use core::ops::Deref;
 
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub enum NulError {
