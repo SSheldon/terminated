@@ -17,10 +17,6 @@ impl NulTerminatedStr {
         }
     }
 
-    pub fn len(&self) -> usize {
-        self.0.len() - 1
-    }
-
     pub fn as_str_with_nul(&self) -> &str {
         &self.0
     }
@@ -30,7 +26,7 @@ impl Deref for NulTerminatedStr {
     type Target = str;
 
     fn deref(&self) -> &str {
-        &self.0[..self.len()]
+        &self.0[..self.0.len() - 1]
     }
 }
 
@@ -59,6 +55,7 @@ mod tests {
         let s = ntstr!("foo");
         assert_eq!(&**s, "foo");
         assert_eq!(s.len(), 3);
+        assert_eq!(&s[0..2], "fo");
         assert_eq!(s.as_str_with_nul(), "foo\0");
     }
 
