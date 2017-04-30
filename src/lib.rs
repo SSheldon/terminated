@@ -21,9 +21,41 @@ impl fmt::Display for NulError {
     }
 }
 
+/**
+A valid UTF8 string terminated by NUL, the null character.
+
+`NulTerminatedStr` dereferences to a `str` slice excluding the NUL terminator,
+meaning all of `str`'s methods are available:
+
+```
+# #[macro_use] extern crate nul;
+# fn main() {
+let s = ntstr!("Hello, World!");
+assert_eq!(s.len(), 13);
+assert!(s.starts_with("Hello"));
+assert!(s.ends_with("World!"));
+assert_eq!(s.find("World"), Some(7));
+# }
+```
+*/
 pub struct NulTerminatedStr(str);
 
 impl NulTerminatedStr {
+    /**
+    Creates a `NulTerminatedStr` from a given string that is NUL-terminated.
+
+    If the given string is not correctly NUL-terminated, a `NulError` is returned.
+
+    # Example
+    ```
+    # use nul::NulTerminatedStr;
+    let mut s = "Hello, World!".to_string();
+    s.push('\0');
+
+    let nts = NulTerminatedStr::from_str_with_nul(&s);
+    assert!(nts.is_ok());
+    ```
+    */
     pub fn from_str_with_nul(s: &str) -> Result<&NulTerminatedStr, NulError> {
         let nul_pos = s.bytes().position(|b| b == 0);
         nul_pos.ok_or(NulError::NotNulTerminated).and_then(|i| {
@@ -36,6 +68,7 @@ impl NulTerminatedStr {
         })
     }
 
+    /// Returns the content of self including the NUL terminator.
     pub fn as_str_with_nul(&self) -> &str {
         &self.0
     }
@@ -67,6 +100,18 @@ impl fmt::Display for NulTerminatedStr {
     }
 }
 
+/**
+Creates a static `NulTerminatedStr` from a string literal.
+
+# Example
+```
+# #[macro_use] extern crate nul;
+# fn main() {
+let s = ntstr!("Hello, World!");
+assert_eq!(s.as_str_with_nul(), "Hello, World!\0");
+# }
+```
+*/
 #[macro_export]
 macro_rules! ntstr {
     ($e:expr) => (
