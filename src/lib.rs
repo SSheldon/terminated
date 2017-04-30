@@ -2,20 +2,36 @@ use std::fmt;
 use std::mem;
 use std::ops::Deref;
 
-pub struct NulError;
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub enum NulError {
+    InteriorNul(usize),
+    NotNulTerminated,
+}
+
+impl fmt::Display for NulError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            NulError::InteriorNul(pos) =>
+                write!(f, "data provided contains an interior nul at byte pos {}", pos),
+            NulError::NotNulTerminated =>
+                f.write_str("data provided is not nul terminated"),
+        }
+    }
+}
 
 pub struct NulTerminatedStr(str);
 
 impl NulTerminatedStr {
     pub fn from_str_with_nul(s: &str) -> Result<&NulTerminatedStr, NulError> {
-        let bytes = s.as_bytes();
-        if bytes.last() != Some(&0) {
-            Err(NulError)
-        } else if bytes[..bytes.len()-1].contains(&0) {
-            Err(NulError)
-        } else {
-            Ok(unsafe { mem::transmute(s) })
-        }
+        let nul_pos = s.bytes().position(|b| b == 0);
+        nul_pos.ok_or(NulError::NotNulTerminated).and_then(|i| {
+            // The first (and only) nul must be at the last index
+            if i == s.len() - 1 {
+                Ok(unsafe { mem::transmute(s) })
+            } else {
+                Err(NulError::InteriorNul(i))
+            }
+        })
     }
 
     pub fn as_str_with_nul(&self) -> &str {
@@ -54,14 +70,14 @@ macro_rules! ntstr {
     ($e:expr) => (
         match $crate::NulTerminatedStr::from_str_with_nul(concat!($e, "\0")) {
             Ok(s) => s,
-            Err(_) => panic!(),
+            Err(e) => panic!("{}", e),
         }
     )
 }
 
 #[cfg(test)]
 mod tests {
-    use super::NulTerminatedStr;
+    use super::{NulTerminatedStr, NulError};
 
     #[test]
     fn test() {
@@ -74,8 +90,11 @@ mod tests {
 
     #[test]
     fn test_err() {
-        assert!(NulTerminatedStr::from_str_with_nul("foo").is_err());
-        assert!(NulTerminatedStr::from_str_with_nul("fo\0o").is_err());
-        assert!(NulTerminatedStr::from_str_with_nul("fo\0o\0").is_err());
+        assert_eq!(NulTerminatedStr::from_str_with_nul("foo").unwrap_err(),
+            NulError::NotNulTerminated);
+        assert_eq!(NulTerminatedStr::from_str_with_nul("fo\0o").unwrap_err(),
+            NulError::InteriorNul(2));
+        assert_eq!(NulTerminatedStr::from_str_with_nul("fo\0o\0").unwrap_err(),
+            NulError::InteriorNul(2));
     }
 }
