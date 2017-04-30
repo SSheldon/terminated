@@ -14,7 +14,7 @@ assert_eq!(s.find("World"), Some(7));
 let ptr = s.as_ptr();
 ```
 
-# CStr vs NulTerminatedStr
+## CStr vs NulTerminatedStr
 
 The standard library does provide the `CStr` type that is NUL-terminated,
 but it does not use any specific encoding. It's therefore insufficient
