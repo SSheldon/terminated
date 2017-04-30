@@ -4,9 +4,12 @@ use core::fmt;
 use core::mem;
 use core::ops::Deref;
 
+/// An error indicating that a string is not correctly NUL-terminated.
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub enum NulError {
+    /// The string contained an interior NUL at this position.
     InteriorNul(usize),
+    /// The string did not have a NUL as its last character.
     NotNulTerminated,
 }
 
