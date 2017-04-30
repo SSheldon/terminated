@@ -1,3 +1,4 @@
+use std::fmt;
 use std::mem;
 use std::ops::Deref;
 
@@ -33,6 +34,18 @@ impl Deref for NulTerminatedStr {
 impl AsRef<str> for NulTerminatedStr {
     fn as_ref(&self) -> &str {
         &**self
+    }
+}
+
+impl fmt::Debug for NulTerminatedStr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self.as_str_with_nul(), f)
+    }
+}
+
+impl fmt::Display for NulTerminatedStr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(&**self, f)
     }
 }
 
