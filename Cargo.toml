@@ -1,6 +1,6 @@
 [package]
 name = "nul"
-version = "0.0.0"
+version = "1.0.0"
 authors = ["Steven Sheldon"]
 
 description = "Types for representing NUL-terminated UTF8 strings."
