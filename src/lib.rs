@@ -6,7 +6,7 @@ require/guarantee UTF8 encoding. Rust has great support for dealing with UTF8,
 but C strings require a NUL terminator which Rust's `str` and `String` don't have.
 
 ```
-# #[macro_use] extern crate nul;
+# #[macro_use] extern crate terminated;
 # fn main() {
 let s = ntstr!("Hello, World!");
 
@@ -58,7 +58,7 @@ A valid UTF8 string terminated by NUL, the null character.
 meaning all of `str`'s methods are available:
 
 ```
-# #[macro_use] extern crate nul;
+# #[macro_use] extern crate terminated;
 # fn main() {
 let s = ntstr!("Hello, World!");
 assert_eq!(s.len(), 13);
@@ -78,7 +78,7 @@ impl NulTerminatedStr {
 
     # Example
     ```
-    # use nul::NulTerminatedStr;
+    # use terminated::NulTerminatedStr;
     let mut s = "Hello, World!".to_string();
     s.push('\0');
 
@@ -135,7 +135,7 @@ Creates a static `NulTerminatedStr` from a string literal.
 
 # Example
 ```
-# #[macro_use] extern crate nul;
+# #[macro_use] extern crate terminated;
 # fn main() {
 let s = ntstr!("Hello, World!");
 assert_eq!(s.as_str_with_nul(), "Hello, World!\0");

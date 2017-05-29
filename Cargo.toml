@@ -1,14 +1,14 @@
 [package]
-name = "nul"
+name = "terminated"
 version = "1.0.0"
 authors = ["Steven Sheldon"]
 
 description = "Types for representing NUL-terminated UTF8 strings."
-keywords = ["cstring", "null-terminated", "ffi"]
+keywords = ["cstring", "null-terminated", "nul", "ffi"]
 categories = ["memory-management", "no-std"]
 readme = "README.md"
-repository = "https://github.com/SSheldon/nul"
-documentation = "https://docs.rs/nul/"
+repository = "https://github.com/SSheldon/terminated"
+documentation = "https://docs.rs/terminated/"
 license = "MIT"
 
 exclude = [
